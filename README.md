@@ -56,8 +56,8 @@ The list of arguments of 'train.py':
 - `--test_epoch`: the epoch to test (only used for `test.py`)
 - `--valid_epoch`: the duration of validation
 - `--exp`: experiment name
-- `--num_layer_enc_ent`: $L$
-- `--num_layer_enc_rel`: $\widehat{L}$
+- `--num_layer_enc_ent`: number of the entity encoder layer
+- `--num_layer_enc_rel`: number of the relation encoder layer
 - `--num_head`: number of attention heads
 - `--hidden_dim`: the hidden dimension of the transformers
 - `--dropout`: the dropout rate of the transformers
@@ -67,5 +67,5 @@ The list of arguments of 'train.py':
 - `--smoothing`: label smoothing ratio
 - `--batch_size`: the batch size
 - `--decay`: the weight decay
-- `--max_img_num`: $k=\hat{k}$
+- `--max_img_num`: number of visual features for entities and relations
 - `--step_size`: the step size of the cosine annealing learning rate scheduler
