@@ -35,13 +35,13 @@ python train.py --data VTKG-C --lr 0.0003045227886325736 --dim 212 --num_epoch 1
 ### WN18RR++
 
 ```python
-python train.py --data WN18RR++ --lr 0.0010213298 --dim 256 --num_epoch 750 --valid_epoch 50 --exp best --num_layer_enc_ent 2 --num_layer_enc_rel 1 --num_layer_dec 1  --num_head 16 --hidden_dim 2048 --dropout 0.1 --emb_dropout 0.9 --vis_dropout 0.3 --txt_dropout 0.1   --smoothing 0.0 --batch_size 1024 --decay 0.0 --max_img_num 1 --step_size 50
+python train.py --data WN18RR++ --lr 0.0010213298 --dim 256 --num_epoch 750 --valid_epoch 50 --exp best --num_layer_enc_ent 2 --num_layer_enc_rel 1  --num_head 16 --hidden_dim 2048 --dropout 0.1 --emb_dropout 0.9 --vis_dropout 0.3 --txt_dropout 0.1   --smoothing 0.0 --batch_size 1024 --decay 0.0 --max_img_num 1 --step_size 50
 ```
 
 ### FB15K237
 
 ```python
-python train.py --data FB15K237 --lr 0.000256938979232663 --dim 256 --num_epoch 150 --valid_epoch 50 --exp best --num_layer_enc_ent 1 --num_layer_enc_rel 1 --num_layer_dec 1  --num_head 64 --hidden_dim 1488 --dropout 0.04120258145778738 --emb_dropout 0.6786708590179708 --vis_dropout 0.029641101227252553 --txt_dropout 0.3208812396423554   --smoothing 0.0 --batch_size 512 --decay 0.0 --max_img_num 1 --step_size 50
+python train.py --data FB15K237 --lr 0.000256938979232663 --dim 256 --num_epoch 150 --valid_epoch 50 --exp best --num_layer_enc_ent 1 --num_layer_enc_rel 1  --num_head 64 --hidden_dim 1488 --dropout 0.04120258145778738 --emb_dropout 0.6786708590179708 --vis_dropout 0.029641101227252553 --txt_dropout 0.3208812396423554   --smoothing 0.0 --batch_size 512 --decay 0.0 --max_img_num 1 --step_size 50
 ```
 
 ## Training from Scratch
