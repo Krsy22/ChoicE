@@ -216,7 +216,7 @@ class Decoder(nn.Module):
 
 class VISTA(nn.Module):
     def __init__(self, num_ent, num_rel, ent_vis, rel_vis, dim_vis, ent_txt, rel_txt, dim_txt, ent_vis_mask, rel_vis_mask, \
-                 dim_str, num_head, dim_hid, num_layer_enc_ent, num_layer_enc_rel, num_layer_dec, dropout = 0.1, \
+                 dim_str, num_head, dim_hid, num_layer_enc_ent, num_layer_enc_rel, dropout = 0.1, \
                  emb_dropout = 0.6, vis_dropout = 0.1, txt_dropout = 0.1):
         super(VISTA, self).__init__()
         self.dim_str = dim_str
