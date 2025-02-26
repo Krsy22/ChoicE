@@ -2,7 +2,7 @@
 
 ## Requirements
 
-We used python 3.8 and PyTorch 1.12.1 with cudatoolkit 11.3.
+We used python 3.7 and PyTorch 1.13.1 with cudatoolkit 11.3.
 
 You can install all requirements with:
 
