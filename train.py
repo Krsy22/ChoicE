@@ -43,7 +43,6 @@ parser.add_argument('--exp', default='vista')
 parser.add_argument('--no_write', action='store_true')
 parser.add_argument('--num_layer_enc_ent', default=2, type=int)
 parser.add_argument('--num_layer_enc_rel', default=1, type=int)
-parser.add_argument('--num_layer_dec', default=2, type=int)
 parser.add_argument('--num_head', default=4, type=int)
 parser.add_argument('--hidden_dim', default = 2048, type = int)
 parser.add_argument('--dropout', default = 0.01, type = float)
@@ -92,7 +91,7 @@ model = VISTA(num_ent = KG.num_ent, num_rel = KG.num_rel, ent_vis = KG.ent_vis_m
               dim_vis = KG.vis_feat_size, ent_txt = KG.ent_txt_matrix, rel_txt = KG.rel_txt_matrix, dim_txt = KG.txt_feat_size, \
               ent_vis_mask = KG.ent_vis_mask, rel_vis_mask = KG.rel_vis_mask, dim_str = args.dim, num_head = args.num_head, \
               dim_hid = args.hidden_dim, num_layer_enc_ent = args.num_layer_enc_ent, num_layer_enc_rel = args.num_layer_enc_rel, \
-              num_layer_dec = args.num_layer_dec, dropout = args.dropout, \
+              dropout = args.dropout, \
               emb_dropout = args.emb_dropout, vis_dropout = args.vis_dropout, txt_dropout = args.txt_dropout).cuda()
 
 loss_fn = nn.CrossEntropyLoss(label_smoothing = args.smoothing)
