@@ -5,7 +5,7 @@
 
 <h2 align="center">
   Overview of ChoicE
-  <img align="center"  src="overview.png" alt="...">
+  <img align="center"  src="overview.pdf" alt="...">
 </h2>
 
 This paper has been submitted to the Knowledge-based Systems.
