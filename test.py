@@ -1,5 +1,5 @@
 from dataset import VTKG
-from model import VISTA
+from model import ChoicE
 from tqdm import tqdm
 from utils import calculate_rank, metrics
 import numpy as np
@@ -56,7 +56,7 @@ parser.add_argument('--max_img_num', default = 3, type = int)
 parser.add_argument('--step_size', default = 50, type = int)
 args = parser.parse_args()
 
-file_format = "roth+cp+complex+VTKG-C"
+file_format = "FB15K237"
 
 for arg_name in vars(args).keys():
     if arg_name not in ["data", "exp", "no_write", "test_epoch"]:
@@ -73,7 +73,7 @@ logger.info(f"{os.getpid()}")
 KG = VTKG(args.data, logger, max_vis_len = args.max_img_num)
 
 KG_Loader = torch.utils.data.DataLoader(KG, batch_size = args.batch_size, shuffle=True)
-model = VISTA(num_ent = KG.num_ent, num_rel = KG.num_rel, ent_vis = KG.ent_vis_matrix, rel_vis = KG.rel_vis_matrix, \
+model = ChoicE(num_ent = KG.num_ent, num_rel = KG.num_rel, ent_vis = KG.ent_vis_matrix, rel_vis = KG.rel_vis_matrix, \
               dim_vis = KG.vis_feat_size, ent_txt = KG.ent_txt_matrix, rel_txt = KG.rel_txt_matrix, dim_txt = KG.txt_feat_size, \
               ent_vis_mask = KG.ent_vis_mask, rel_vis_mask = KG.rel_vis_mask, dim_str = args.dim, num_head = args.num_head, \
               dim_hid = args.hidden_dim, num_layer_enc_ent = args.num_layer_enc_ent, num_layer_enc_rel = args.num_layer_enc_rel, \
@@ -82,7 +82,7 @@ model = VISTA(num_ent = KG.num_ent, num_rel = KG.num_rel, ent_vis = KG.ent_vis_m
 
 
 
-loaded_ckpt = torch.load(f"/home/rsy/VISTA-main/logs_test/best/VTKG-C/_best_trial_3.ckpt")
+loaded_ckpt = torch.load(f"")
 model.load_state_dict(loaded_ckpt['model_state_dict'])
 
 
@@ -98,13 +98,7 @@ with torch.no_grad():
     for triplet in tqdm(KG.test):
         h,r,t = triplet
         rhs_scores, loss = model.score(ent_embs, rel_embs, torch.tensor([[h, r, t]]).cuda())
-        #total_expert_counts += expert_counts
-#        head_score = model.score(ent_embs, rel_embs, torch.tensor([[KG.num_ent + KG.num_rel, r + KG.num_ent, t + KG.num_rel]]).cuda())[0].detach().cpu().numpy()
-#        head_rank = calculate_rank(head_score, h, KG.filter_dict[(-1, r, t)])
-#        tail_score = model.score(ent_embs, rel_embs, torch.tensor([[h + KG.num_rel, r + KG.num_ent, KG.num_ent + KG.num_rel]]).cuda())[0].detach().cpu().numpy()
         tail_rank = calculate_rank(rhs_scores[0].cpu().numpy(), t, KG.filter_dict[(h, r, -1)])
-
-        #test_lp_list_rank.append(head_rank)
         test_lp_list_rank.append(tail_rank)
 
     test_lp_list_rank = np.array(test_lp_list_rank)
@@ -116,11 +110,11 @@ with torch.no_grad():
     logger.info(f"Hit3: {thit3}")
     logger.info(f"Hit1: {thit1}")
     #logger.info(f"Total decoder selection counts: {total_expert_counts.tolist()}")
-    logger.info(f"ent_str_results: {ent_str_results.tolist()}")
-    logger.info(f"ent_vis_results: {ent_vis_results.tolist()}")
-    logger.info(f"ent_txt_results: {ent_txt_results.tolist()}")
-    logger.info(f"rel_str_results: {rel_str_results.tolist()}")
-    logger.info(f"rel_vis_results: {rel_vis_results.tolist()}")
-    logger.info(f"rel_txt_results: {rel_txt_results.tolist()}")
+#    logger.info(f"ent_str_results: {ent_str_results.tolist()}")
+#    logger.info(f"ent_vis_results: {ent_vis_results.tolist()}")
+#    logger.info(f"ent_txt_results: {ent_txt_results.tolist()}")
+#    logger.info(f"rel_str_results: {rel_str_results.tolist()}")
+#    logger.info(f"rel_vis_results: {rel_vis_results.tolist()}")
+#    logger.info(f"rel_txt_results: {rel_txt_results.tolist()}")
 
 

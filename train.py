@@ -1,5 +1,5 @@
 from dataset import VTKG
-from model import VISTA
+from model import ChoicE
 from tqdm import tqdm
 from utils import calculate_rank, metrics
 import numpy as np
@@ -34,30 +34,30 @@ logger.addHandler(stream_handler)
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--data', default = "VTKG-C", type = str)
-parser.add_argument('--lr', default=1e-4, type=float)
+parser.add_argument('--data', default = "FB15K237", type = str)
+parser.add_argument('--lr', default=0.000256938979232663, type=float)
 parser.add_argument('--dim', default=256, type=int)
 parser.add_argument('--num_epoch', default=150, type=int)
 parser.add_argument('--valid_epoch', default=50, type=int)
-parser.add_argument('--exp', default='vista')
+parser.add_argument('--exp', default='best')
 parser.add_argument('--no_write', action='store_true')
-parser.add_argument('--num_layer_enc_ent', default=2, type=int)
+parser.add_argument('--num_layer_enc_ent', default=1, type=int)
 parser.add_argument('--num_layer_enc_rel', default=1, type=int)
-parser.add_argument('--num_head', default=4, type=int)
-parser.add_argument('--hidden_dim', default = 2048, type = int)
-parser.add_argument('--dropout', default = 0.01, type = float)
-parser.add_argument('--emb_dropout', default = 0.9, type = float)
-parser.add_argument('--vis_dropout', default = 0.4, type = float)
-parser.add_argument('--txt_dropout', default = 0.1, type = float)
+parser.add_argument('--num_head', default=64, type=int)
+parser.add_argument('--hidden_dim', default = 1488, type = int)
+parser.add_argument('--dropout', default = 0.04120258145778738, type = float)
+parser.add_argument('--emb_dropout', default = 0.6786708590179708, type = float)
+parser.add_argument('--vis_dropout', default = 0.029641101227252553, type = float)
+parser.add_argument('--txt_dropout', default = 0.3208812396423554, type = float)
 parser.add_argument('--smoothing', default = 0.0, type = float)
 parser.add_argument('--batch_size', default = 512, type = int)
 parser.add_argument('--decay', default = 0.0, type = float)
-parser.add_argument('--max_img_num', default = 3, type = int)
+parser.add_argument('--max_img_num', default = 1, type = int)
 parser.add_argument('--cont', action = 'store_true')
 parser.add_argument('--step_size', default = 50, type = int)
 args = parser.parse_args()
 
-file_format = "cp+VTKG-C"
+file_format = "FB15K237"
 
 for arg_name in vars(args).keys():
     if arg_name not in ["data", "exp", "no_write", "num_epoch", "cont", "early_stop"]:
@@ -87,7 +87,7 @@ logger.info(f"{os.getpid()}")
 KG = VTKG(args.data, logger, max_vis_len = args.max_img_num)
 
 KG_Loader = torch.utils.data.DataLoader(KG, batch_size = args.batch_size, shuffle=True)
-model = VISTA(num_ent = KG.num_ent, num_rel = KG.num_rel, ent_vis = KG.ent_vis_matrix, rel_vis = KG.rel_vis_matrix, \
+model = ChoicE(num_ent = KG.num_ent, num_rel = KG.num_rel, ent_vis = KG.ent_vis_matrix, rel_vis = KG.rel_vis_matrix, \
               dim_vis = KG.vis_feat_size, ent_txt = KG.ent_txt_matrix, rel_txt = KG.rel_txt_matrix, dim_txt = KG.txt_feat_size, \
               ent_vis_mask = KG.ent_vis_mask, rel_vis_mask = KG.rel_vis_mask, dim_str = args.dim, num_head = args.num_head, \
               dim_hid = args.hidden_dim, num_layer_enc_ent = args.num_layer_enc_ent, num_layer_enc_rel = args.num_layer_enc_rel, \
@@ -125,12 +125,8 @@ for epoch in range(last_epoch + 1, args.num_epoch + 1):
 
 
         ent_embs, rel_embs = model()
-
-        #scores = model.score(ent_embs, rel_embs, batch.cuda())
         rhs_scores, aux_loss = model.score(ent_embs, rel_embs, batch.cuda())
         l_fit = w_rhs * loss_fn(rhs_scores, batch[:, 2].cuda())
-        #loss = l_fit
-     
         loss = 0.8 * l_fit + 0.2 * aux_loss
         total_loss += loss.item()
         optimizer.zero_grad()
@@ -165,8 +161,6 @@ for epoch in range(last_epoch + 1, args.num_epoch + 1):
                 h,r,t = triplet
                 rhs_scores, _ = model.score(ent_embs, rel_embs, torch.tensor([[h, r, t]]).cuda())
                 tail_rank = calculate_rank(rhs_scores[0].cpu().numpy(), t, KG.filter_dict[(h, r, -1)])
-
-                
                 lp_list_rank.append(tail_rank)
             lp_list_rank = np.array(lp_list_rank)
             mr, mrr, hit10, hit3, hit1 = metrics(lp_list_rank)
