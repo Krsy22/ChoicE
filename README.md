@@ -8,7 +8,7 @@
   <img align="center"  src="overview.png" alt="...">
 </h2>
 
-This paper has been submitted to the Knowledge-based Systems.
+This paper has been submitted to the Knowledge-Based Systems.
 
 ### Dependencies
 
